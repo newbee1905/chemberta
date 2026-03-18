@@ -6,7 +6,8 @@ seed: 42
 device: cuda
 
 model:
-  name: DeepChem/ChemBERTa-MLM-100M
+  name: DeepChem/ChemBERTa-100M-MLM
+  tokenizer_name: null
   max_length: 256
   dropout: 0.1
 

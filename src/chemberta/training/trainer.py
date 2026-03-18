@@ -122,7 +122,15 @@ def _evaluate(task_type: str, model, loader, device):
 
 def train_task(cfg, task_spec, train_data, val_data, test_data) -> TrainResult:
     device = torch.device("cuda" if cfg.device == "cuda" and torch.cuda.is_available() else "cpu")
-    tokenizer = AutoTokenizer.from_pretrained(cfg.model.name)
+    tokenizer_name = cfg.model.get("tokenizer_name") or cfg.model.name
+    try:
+        tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
+    except OSError as exc:
+        raise RuntimeError(
+            f"Unable to load tokenizer/model config from '{tokenizer_name}'. "
+            "Check the Hugging Face model id in config (e.g. DeepChem/ChemBERTa-100M-MLM, "
+            "DeepChem/ChemBERTa-77M-MTR, DeepChem/ChemBERTa-77M-MLM)."
+        ) from exc
 
     train_ds = SmilesDataset(*train_data)
     val_ds = SmilesDataset(*val_data)

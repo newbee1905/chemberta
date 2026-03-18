@@ -38,7 +38,15 @@ python -m chemberta.training.train \
   task=tox21 \
   training.batch_size=16 \
   training.epochs=10 \
-  model.name=DeepChem/ChemBERTa-MLM-100M
+  model.name=DeepChem/ChemBERTa-100M-MLM
 ```
 
 Outputs (checkpoints + metrics) are written under Hydra's run directory (`outputs/...`).
+
+## Notes on pretrained checkpoints
+
+The default model id is:
+
+- `DeepChem/ChemBERTa-100M-MLM`
+
+If you want a different ChemBERTa-v3 checkpoint, override `model.name` (and optionally `model.tokenizer_name`).
