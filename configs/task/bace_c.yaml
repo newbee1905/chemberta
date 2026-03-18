@@ -1,0 +1,4 @@
+name: bace_c
+type: classification
+num_labels: 1
+metric: roc_auc
