@@ -33,10 +33,14 @@ class TrainResult:
 
 def _build_optimizer(model: nn.Module, cfg) -> MuonAdamW:
     matrix_params, other_params = [], []
-    for p in model.parameters():
+    for name, p in model.named_parameters():
         if not p.requires_grad:
             continue
-        if p.ndim == 2 and p.shape[0] > 1 and p.shape[1] > 1:
+        # Keep potentially unused submodules (e.g. pooler layers in encoder-only usage)
+        # on AdamW, because Muon expects all params in a group to have gradients.
+        if "pooler" in name:
+            other_params.append(p)
+        elif p.ndim == 2 and p.shape[0] > 1 and p.shape[1] > 1:
             matrix_params.append(p)
         else:
             other_params.append(p)
