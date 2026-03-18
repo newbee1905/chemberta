@@ -1,0 +1,4 @@
+name: sider
+type: classification
+num_labels: 27
+metric: roc_auc

@@ -1,0 +1,4 @@
+name: freesolv
+type: regression
+num_labels: 1
+metric: rmse
