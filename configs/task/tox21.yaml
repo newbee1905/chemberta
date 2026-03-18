@@ -1,0 +1,4 @@
+name: tox21
+type: classification
+num_labels: 12
+metric: roc_auc

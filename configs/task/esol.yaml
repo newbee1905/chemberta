@@ -1,0 +1,4 @@
+name: esol
+type: regression
+num_labels: 1
+metric: rmse

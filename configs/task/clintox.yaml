@@ -1,0 +1,4 @@
+name: clintox
+type: classification
+num_labels: 2
+metric: roc_auc
