@@ -32,7 +32,8 @@ class TrainResult:
 
 
 def _build_optimizer(model: nn.Module, cfg) -> MuonAdamW:
-    matrix_params, other_params = [], []
+    matrix_params_by_shape: dict[tuple[int, ...], list[torch.nn.Parameter]] = {}
+    other_params = []
     for name, p in model.named_parameters():
         if not p.requires_grad:
             continue
@@ -41,7 +42,7 @@ def _build_optimizer(model: nn.Module, cfg) -> MuonAdamW:
         if "pooler" in name:
             other_params.append(p)
         elif p.ndim == 2 and p.shape[0] > 1 and p.shape[1] > 1:
-            matrix_params.append(p)
+            matrix_params_by_shape.setdefault(tuple(p.shape), []).append(p)
         else:
             other_params.append(p)
 
@@ -55,10 +56,10 @@ def _build_optimizer(model: nn.Module, cfg) -> MuonAdamW:
             "weight_decay": cfg.optimizer.adamw.weight_decay,
         }
     ]
-    if matrix_params:
+    for _, shape_group in sorted(matrix_params_by_shape.items(), key=lambda kv: kv[0]):
         groups.append(
             {
-                "params": matrix_params,
+                "params": shape_group,
                 "kind": "muon",
                 "lr": cfg.optimizer.muon.lr,
                 "momentum": cfg.optimizer.muon.momentum,
